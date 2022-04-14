@@ -1,0 +1,102 @@
+server:
+  # SpringBoot旧版本写法
+#  context-path: /miaosha
+
+## SpringBoot新版本写法（2.0以后）
+#  servlet:
+#    context-path: /miaosha
+
+  port: 8082
+
+
+spring:
+
+  # thymeleaf
+  thymeleaf:
+    cache: false
+    content-type: text/html
+    enabled: true
+    encoding: UTF-8
+    mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+
+  # 静态资源配置
+  #  resources:
+  #    add-mappings: true
+  #    cache-period: 3600
+  #    chain:
+  #      cache: true
+  #      enabled: true
+  #      gzipped: true
+  #      html-application-cache: true
+  #    static-locations: classpath:/static/
+
+  # druid连接池
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/miaosha?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: root123456
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    filters: stat
+    maxActive: 1000
+    initialSize: 100
+    maxWait: 60000
+    minldle: 500
+    timeBetweenEvictionRunsMills: 60000
+    minEvictableIdleTimeMills: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+
+  # RabbitMQ
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest  # 使用guest默认不能远程访问mq，应该修改rabbitmq的配置文件
+    password: guest
+    virtual-host: /
+    # 消费者
+    listener:
+      simple:
+        concurrency: 10  # 消费者数量
+        max-concurrency: 10
+        prefetch: 1  # 每次从队列取的数量
+        auto-startup: true  # 消费者自动启动
+        default-requeue-rejected: true  # 消费失败是否重试
+    # 发送者
+    template:
+      retry:
+        enabled: true  # 是否重试
+        initial-interval: 1000  # 重试间隔
+        max-attemplts: 3  # 最大重试次数
+        max-interval: 10000  # 最大重试间隔
+        multiplier: 1.0  # 等待间隔倍数
+
+# mybatis
+mybatis:
+  type-aliases-package: com.imooc.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 3000  # ms
+  mapperLocations = classpath: com/imooc/dao/*.xml
+
+# Redis
+redis:
+  host: 127.0.0.1
+  port: 6379
+  timeout: 10
+  password: redis
+  poolMaxTotal: 10
+  poolMaxIdle: 500
+  poolMaxWait: 500
+
+logging:
+  file: miaosha.log
+
+
